@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+:root {
+  --bg-app: #070a13;
+  --text-app: #f3f4f6;
+  --text-muted: #94a3b8;
+  --text-title: #f8fafc;
+  --text-md-heading: #c084fc; /* purple-400 */
+  --text-md-body: #cbd5e1; /* slate-300 */
+  --text-md-strong: #fbbf24; /* amber-400 */
+  --scrollbar-track: #0f172a;
+  --scrollbar-thumb: #3b0764;
+  --scrollbar-thumb-hover: #6b21a8;
+}
+
+.light {
+  --bg-app: #f8fafc;
+  --text-app: #1e293b;
+  --text-muted: #64748b;
+  --text-title: #0f172a;
+  --text-md-heading: #7c3aed; /* purple-600 */
+  --text-md-body: #334155; /* slate-705 */
+  --text-md-strong: #d97706; /* amber-600 */
+  --scrollbar-track: #f1f5f9;
+  --scrollbar-thumb: #c084fc;
+  --scrollbar-thumb-hover: #a855f7;
+}
+
+/* Custom scrollbar and ambient styles */
+body {
+  background-color: var(--bg-app);
+  color: var(--text-app);
+  font-family: var(--font-sans);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* Ambient glow custom utilities */
+.glow-purple {
+  box-shadow: 0 0 40px -5px rgba(139, 92, 246, 0.15);
+}
+
+.light .glow-purple {
+  box-shadow: 0 0 30px -5px rgba(139, 92, 246, 0.08);
+}
+
+.glow-btn {
+  box-shadow: 0 0 15px -1px rgba(139, 92, 246, 0.4);
+}
+
+/* Markdown prose overrides for Financial Plan Action */
+.markdown-body h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--text-md-heading);
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 1.15rem;
+  transition: color 0.3s ease;
+}
+
+.markdown-body p {
+  line-height: 1.625;
+  color: var(--text-md-body);
+  margin-bottom: 1rem;
+  transition: color 0.3s ease;
+}
+
+.markdown-body ul {
+  list-style-type: disc;
+  padding-left: 1.25rem;
+  margin-bottom: 1rem;
+  color: var(--text-md-body);
+  transition: color 0.3s ease;
+}
+
+.markdown-body li {
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+}
+
+.markdown-body strong {
+  color: var(--text-md-strong);
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+

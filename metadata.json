@@ -1,0 +1,6 @@
+{
+  "name": "Planej.ai",
+  "description": "Plataforma de planejamento financeiro pessoal inteligente baseada em Inteligência Artificial para guiar seus sonhos.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
