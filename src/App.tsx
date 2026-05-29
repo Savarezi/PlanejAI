@@ -47,6 +47,18 @@ export default function App() {
   const [showKeyModal, setShowKeyModal] = useState(false);
   const [isKeySaved, setIsKeySaved] = useState(false);
 
+  // Custom API configuration tooltip onboarding state
+  const [showApiTooltip, setShowApiTooltip] = useState(false);
+
+  const handleDismissTooltip = () => {
+    try {
+      localStorage.setItem("planejai_api_tooltip_dismissed", "true");
+    } catch (e) {
+      console.error(e);
+    }
+    setShowApiTooltip(false);
+  };
+
   // Loading and execution states
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState<string | null>(null);
@@ -78,7 +90,7 @@ export default function App() {
 
   // Load history & API key from localStorage on mount
   useEffect(() => {
-
+    let tooltipTimer: any;
     try {
       const storedHistory = localStorage.getItem("planejai_history");
       if (storedHistory) {
@@ -90,9 +102,19 @@ export default function App() {
         setCustomApiKey(storedKey);
         setIsKeySaved(true);
       }
+
+      const tooltipDismissed = localStorage.getItem("planejai_api_tooltip_dismissed");
+      if (!tooltipDismissed && !storedKey) {
+        tooltipTimer = setTimeout(() => {
+          setShowApiTooltip(true);
+        }, 1200);
+      }
     } catch (e) {
       console.error("Falha ao carregar dados do LocalStorage:", e);
     }
+    return () => {
+      if (tooltipTimer) clearTimeout(tooltipTimer);
+    };
   }, []);
 
   // Save customized API key
@@ -427,23 +449,93 @@ Parabéns pela iniciativa de organizar sua vida! O planejamento do sonho **${for
             </button>
 
             {/* Custom API key configuration trigger */}
-            <button
-              id="key-config-trigger"
-              onClick={() => setShowKeyModal(true)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all ${
-                isKeySaved 
-                  ? theme === "dark" 
-                    ? "bg-purple-900/15 border-purple-800/80 text-purple-200" 
-                    : "bg-purple-100 border-purple-200 text-purple-800"
-                  : theme === "dark"
-                    ? "bg-slate-900/60 border-slate-800 text-slate-400 hover:text-slate-200"
-                    : "bg-slate-100 border-slate-200 text-slate-600 hover:bg-slate-200"
-              }`}
-            >
-              <Key className={`w-3.5 h-3.5 ${isKeySaved ? "text-amber-500" : ""}`} />
-              <span className="hidden sm:inline">{isKeySaved ? "Chave Ativa" : "Configuração IA"}</span>
-              <span className={`w-1.5 h-1.5 rounded-full ${isKeySaved ? "bg-purple-500" : "bg-slate-400"}`} />
-            </button>
+            <div className="relative inline-block text-left" id="key-config-container">
+              <button
+                id="key-config-trigger"
+                onClick={() => {
+                  setShowKeyModal(true);
+                  handleDismissTooltip();
+                }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all ${
+                  isKeySaved 
+                    ? theme === "dark" 
+                      ? "bg-purple-900/15 border-purple-800/80 text-purple-200" 
+                      : "bg-purple-100 border-purple-200 text-purple-800"
+                    : theme === "dark"
+                      ? "bg-slate-900/60 border-slate-800 text-slate-400 hover:text-slate-200"
+                      : "bg-slate-100 border-slate-200 text-slate-600 hover:bg-slate-200"
+                }`}
+              >
+                <Key className={`w-3.5 h-3.5 ${isKeySaved ? "text-amber-500" : ""}`} />
+                <span className="hidden sm:inline">{isKeySaved ? "Chave Ativa" : "Configuração IA"}</span>
+                <span className={`w-1.5 h-1.5 rounded-full ${isKeySaved ? "bg-purple-500" : "bg-slate-400"}`} />
+              </button>
+
+              {/* Elegant Onboarding Tooltip Card */}
+              {showApiTooltip && (
+                <div 
+                  id="api-introduction-tooltip"
+                  className={`absolute right-0 top-full mt-3 w-72 sm:w-80 p-4 rounded-xl border shadow-2xl z-50 animate-fadeIn ${
+                    theme === "dark"
+                      ? "bg-slate-900 border-purple-900/40 text-slate-100 shadow-purple-950/50"
+                      : "bg-white border-purple-200 text-slate-800 shadow-purple-100/30"
+                  }`}
+                >
+                  {/* Tooltip Arrow pointing up */}
+                  <div className={`absolute right-10 -top-1.5 w-3 h-3 rotate-45 border-t border-l ${
+                    theme === "dark" 
+                      ? "bg-slate-900 border-purple-900/40" 
+                      : "bg-white border-purple-200"
+                  }`} />
+                  
+                  <div className="flex items-start justify-between gap-2.5 mb-2 relative z-10">
+                    <div className="flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-yellow-500 shrink-0" />
+                      <h4 className="font-display font-semibold text-xs tracking-tight">O que é a Configuração IA?</h4>
+                    </div>
+                    <button 
+                      onClick={handleDismissTooltip}
+                      className={`p-1 rounded-lg transition-colors ${
+                        theme === 'dark'
+                          ? 'text-slate-500 hover:text-slate-300 hover:bg-slate-800/50'
+                          : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'
+                      }`}
+                      title="Fechar"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  <p className={`text-xs leading-relaxed mb-3 relative z-10 ${
+                    theme === 'dark' ? 'text-slate-400' : 'text-slate-600'
+                  }`}>
+                    Permite adicionar sua chave pessoal da API Gemini para usufruir de relatórios detalhados ilimitados diretamente de suas cotas pessoais gratuitas ou pagas do Google AI Studio.
+                  </p>
+
+                  <div className="flex items-center justify-end gap-2 relative z-10">
+                    <button
+                      onClick={handleDismissTooltip}
+                      className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-medium transition-colors ${
+                        theme === 'dark'
+                          ? 'bg-slate-800 hover:bg-slate-750 text-slate-400 hover:text-slate-200'
+                          : 'bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-slate-800'
+                      }`}
+                    >
+                      Apenas Ver
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowKeyModal(true);
+                        handleDismissTooltip();
+                      }}
+                      className="px-2.5 py-1 rounded-lg text-[10px] font-mono font-medium bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-550 text-white transition-all shadow-sm"
+                    >
+                      Configurar
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </header>
@@ -470,7 +562,7 @@ Parabéns pela iniciativa de organizar sua vida! O planejamento do sonho **${for
                 theme === "dark" ? "text-gray-50" : "text-slate-900"
               }`}>
                 Conquiste seus sonhos com <br className="hidden md:block"/>
-                <span className="bg-gradient-to-r from-purple-500 via-fuchsia-500 to-indigo-505 bg-clip-text text-transparent font-extrabold">
+                <span className="bg-gradient-to-r from-purple-500 via-fuchsia-400 to-indigo-400 bg-clip-text text-transparent font-extrabold">
                   Planejamento Inteligente
                 </span>
               </h1>
