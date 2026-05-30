@@ -90,7 +90,7 @@ No ambiente de produção ou antes de inicializar o servidor de desenvolvimento 
 
 1. Na raiz do projeto, crie um arquivo com a nomenclatura `.env` baseando-se no exemplo abaixo:
 ```env
-GEMINI_API_KEY=sua_chave_secreta_aqui_da_google_ai_studio
+GEMINI_API_KEY=*****************
 ```
 
 ---
